@@ -11,12 +11,15 @@ public class ListFiles {
 		StackTraceElement[] stack = Thread.currentThread ().getStackTrace ();
 	    StackTraceElement main = stack[stack.length - 1];
 	    String mainClass = main.getClassName ();
+	    
+	    //String mainClass = System.getProperty("sun.java.command");
+
 
 		// Directory path here
 		String path = ".";
 		if(args.length != 1){
-			System.out.println("Usage: " + mainClass + "path");
-			System.out.println("Example-- " + mainClass + "D:\\\\RemoteLinux");
+			System.out.println("Usage: java " + mainClass + " path");
+			System.out.println("Example-- java " + mainClass + " D:\\RemoteLinux");
 			return;
 		}
 		path = args[0];
