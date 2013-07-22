@@ -31,6 +31,11 @@ public class ListFiles {
 	public static void listRecurrsive(String path){
 		String file;
 		File folder = new File(path);
+		// Check if the path exists
+		if(!folder.exists()){
+			System.out.println("No such path--" + path);
+			return;
+		}
 		File[] listOfFiles = folder.listFiles();
 
 		for (int i = 0; i < listOfFiles.length; i++) {
