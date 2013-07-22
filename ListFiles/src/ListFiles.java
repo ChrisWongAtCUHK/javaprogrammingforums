@@ -1,6 +1,6 @@
 import java.io.File;
-
-import sun.applet.Main;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 
 public class ListFiles {
@@ -14,7 +14,6 @@ public class ListFiles {
 	    
 	    //String mainClass = System.getProperty("sun.java.command");
 
-
 		// Directory path here
 		String path = ".";
 		if(args.length != 1){
@@ -22,18 +21,32 @@ public class ListFiles {
 			System.out.println("Example-- java " + mainClass + " D:\\RemoteLinux");
 			return;
 		}
+		
 		path = args[0];
-
-		String files;
+		listRecurrsive(path);
+		
+		
+	}
+	
+	public static void listRecurrsive(String path){
+		String file;
 		File folder = new File(path);
 		File[] listOfFiles = folder.listFiles();
 
 		for (int i = 0; i < listOfFiles.length; i++) {
-
+			// Check if file or directory
 			if (listOfFiles[i].isFile()) {
-				files = listOfFiles[i].getName();
-				System.out.println(files);
+				// Get the last modified timestamp
+				long lastModified = listOfFiles[i].lastModified();
+				Timestamp ts = new Timestamp(lastModified);
+				String date = new SimpleDateFormat("dd/MM/yyyy\thh:mm:ss").format(ts);
+				
+				file = listOfFiles[i].getName();
+				System.out.println(date + "\t" + path + "\\" + file);
+			} else if(listOfFiles[i].isDirectory()){
+				String subdir = listOfFiles[i].toString();
+				listRecurrsive(subdir);
 			}
-		}
+		}		
 	}
 }
