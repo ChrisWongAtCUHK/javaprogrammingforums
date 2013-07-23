@@ -1,22 +1,21 @@
 import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-
 
 public class ListFilesWithName {
-	public static final String dirSeparator = "\\";				// window
-	//public static final String dirSeparator = "/";			// linux
+	public static final String dirSeparator = System.getProperty("file.separator");				// window
+	public static final String linuxFileSeparator = "/";										// linux
 	public static final CharSequence asterisk = "*", target1 = ".", replacement1 = "\\.", target2  = "*", replacement2 = ".*";
 	
 	public static void main(String[] args) {
 		
 		// Directory path here
 		String path = "", pattern = "";
-		
+
 		if(args.length != 1){
 			// If no, use the current directory as path
 			System.out.println("Warning: please input with double quotes");
+			
 			path = System.getProperty("user.dir");
 		} else {
 		
@@ -26,7 +25,12 @@ public class ListFilesWithName {
 				if (args[0].contains(dirSeparator)) {
 					
 					// If yes, split the path and the pattern by dirSeparator
-					String[] strs = args[0].split("\\\\");		// window
+					String spliter = "\\\\";									// window
+					if(dirSeparator.equals(linuxFileSeparator)){
+						spliter = linuxFileSeparator; 							// linux
+					}
+					
+					String[] strs = args[0].split(spliter);						// window
 					//String[] strs = args[0].split("/"); 		// linux
 					
 					for(int i = 0; i < strs.length -  2; i++){
@@ -36,7 +40,6 @@ public class ListFilesWithName {
 					pattern = strs[strs.length - 1];
 				} else {
 					// If no, use the current directory as path and use args[0] as pattern
-					
 					path = System.getProperty("user.dir");
 					pattern = args[0];
 				}
