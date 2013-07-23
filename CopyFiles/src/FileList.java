@@ -27,14 +27,6 @@ public class FileList<T> extends ArrayList<T> {
 		return super.add((T) file);
 	}
 	
-	// Debug
-	public void show(){
-		for(T t: this){
-			System.out.println(t.toString());
-		}
-		System.out.println();
-	}
-	
 	// Check if contains by comparing relative file name
 	public File contains(String relativeFileName){
 		for(T t: this){

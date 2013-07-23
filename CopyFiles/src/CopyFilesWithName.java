@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 public class CopyFilesWithName {
 	public static final String dirSeparator = System.getProperty("file.separator");				// window
@@ -16,6 +15,7 @@ public class CopyFilesWithName {
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy\tHH:mm:ss");
 	public static FileList<File> fileList;
 	public static String spliter = "\\\\";
+	static int copyCount = 0;
 	
 	// Directory path here
 	static String srcPath = "", pattern = "", distPath = "";
@@ -40,8 +40,6 @@ public class CopyFilesWithName {
 			if (args[0].contains(asterisk)) {
 				// Check if the input has dirSeparator
 				if (args[0].contains(dirSeparator)) {
-					
-					
 					
 					String[] strs = args[0].split(spliter);						// window
 					
@@ -68,12 +66,14 @@ public class CopyFilesWithName {
 		distPath = args[1];
 		
 		fileList = new FileList<File>(distPath, spliter);
-		listRecurrsive(distPath);
-		fileList.show();
-		listRecurrsive(srcPath, pattern);
+		addRecursive(distPath);
+		copyRecursive(srcPath, pattern);
+		
+		System.out.println("No. of copy: "+ copyCount);
 	}
 	
-	public static void listRecurrsive(String path){
+	// Add the destination path files recursively
+	public static void addRecursive(String path){
 		File folder = new File(path);
 		// Check if the path exists
 		if(!folder.exists()){
@@ -97,13 +97,13 @@ public class CopyFilesWithName {
 			// Check if  directory
 			if(listOfFiles[i].isDirectory()){
 				String subdir = listOfFiles[i].toString();
-				listRecurrsive(subdir);
+				addRecursive(subdir);
 			}
 		}		
 	}
 
 	// List the files recurrsivly
-	public static void listRecurrsive(String path, String pattern){
+	public static void copyRecursive(String path, String pattern){
 		
 		File folder = new File(path);
 		// Check if the path exists
@@ -155,17 +155,18 @@ public class CopyFilesWithName {
 				// Check if the sub directory exists
 				File foundDir = fileList.contains(subdir);
 				if(foundDir == null){
-					// TODO: if not exist, create the directory
+					// If not exist, create the directory
 					mkdir(listOfFiles[i].toString().replace(srcPath, distPath));
 				}
 				
-				listRecurrsive(listOfFiles[i].toString(), pattern);
+				copyRecursive(listOfFiles[i].toString(), pattern);
 			}
 		}		
 	}
 	
 	// Copy file from one to one
 	public static void copyFile(String src, String dist){
+		copyCount++;
 		System.out.println("Copy from " + src + " to " + dist);
 		try {
 			File f1 = new File(src);
