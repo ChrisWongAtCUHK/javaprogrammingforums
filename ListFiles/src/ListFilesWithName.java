@@ -31,7 +31,6 @@ public class ListFilesWithName {
 					}
 					
 					String[] strs = args[0].split(spliter);						// window
-					//String[] strs = args[0].split("/"); 		// linux
 					
 					for(int i = 0; i < strs.length -  2; i++){
 						path += strs[i] + dirSeparator;
@@ -88,7 +87,7 @@ public class ListFilesWithName {
 				// Get the last modified timestamp
 				long lastModified = listOfFiles[i].lastModified();
 				Timestamp ts = new Timestamp(lastModified);
-				String date = new SimpleDateFormat("dd/MM/yyyy\thh:mm:ss").format(ts);
+				String date = new SimpleDateFormat("dd/MM/yyyy\tHH:mm:ss").format(ts);
 				
 				
 				System.out.println(date + "\t" + path + dirSeparator + fileName);			// window

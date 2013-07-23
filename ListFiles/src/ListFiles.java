@@ -2,7 +2,6 @@ import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
-
 public class ListFiles {
 	// http://www.javaprogrammingforums.com/java-programming-tutorials/3-java-program-can-list-all-files-given-directory.html
 	public static void main(String[] args) {
@@ -35,6 +34,15 @@ public class ListFiles {
 		if(!folder.exists()){
 			System.out.println("No such path--" + path);
 			return;
+		} else if(folder.isFile()){
+			// Special case for input path is file name
+			// Get the last modified timestamp
+			long lastModified = folder.lastModified();
+			Timestamp ts = new Timestamp(lastModified);
+			String date = new SimpleDateFormat("dd/MM/yyyy\thh:mm:ss").format(ts);
+
+			System.out.println(date + "\t" + path);			// window
+			return ; 
 		}
 		File[] listOfFiles = folder.listFiles();
 
@@ -47,7 +55,7 @@ public class ListFiles {
 				String date = new SimpleDateFormat("dd/MM/yyyy\thh:mm:ss").format(ts);
 				
 				file = listOfFiles[i].getName();
-				System.out.println(date + "\t" + path + "\\" + file);
+				System.out.println(date + "\t" + path + "\\" + file);			// window
 			} else if(listOfFiles[i].isDirectory()){
 				String subdir = listOfFiles[i].toString();
 				listRecurrsive(subdir);
