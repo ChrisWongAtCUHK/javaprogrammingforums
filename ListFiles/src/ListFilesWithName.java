@@ -5,16 +5,18 @@ import java.util.Arrays;
 
 
 public class ListFilesWithName {
-	public static final String dirSeparator = "\\";					// window
+	public static final String dirSeparator = "\\";				// window
+	//public static final String dirSeparator = "/";			// linux
 	public static final CharSequence asterisk = "*", target1 = ".", replacement1 = "\\.", target2  = "*", replacement2 = ".*";
 	
 	public static void main(String[] args) {
-		String mainClass = System.getProperty("sun.java.command");
 		
 		// Directory path here
-		String path = "", pattern = "", arg0 = "";
+		String path = "", pattern = "";
+		
 		if(args.length != 1){
 			// If no, use the current directory as path
+			System.out.println("Warning: please input with double quotes");
 			path = System.getProperty("user.dir");
 		} else {
 		
@@ -22,15 +24,19 @@ public class ListFilesWithName {
 			if (args[0].contains(asterisk)) {
 				// Check if the input has dirSeparator
 				if (args[0].contains(dirSeparator)) {
-					// If yes, split the path and the pattern by dirSeparator
-					String[] strs = args[0].split("\\\\");			// window
 					
-					for(int i = 0; i < strs.length -  2; i++)
+					// If yes, split the path and the pattern by dirSeparator
+					String[] strs = args[0].split("\\\\");		// window
+					//String[] strs = args[0].split("/"); 		// linux
+					
+					for(int i = 0; i < strs.length -  2; i++){
 						path += strs[i] + dirSeparator;
+					}
 					path += strs[strs.length -  2];
 					pattern = strs[strs.length - 1];
 				} else {
 					// If no, use the current directory as path and use args[0] as pattern
+					
 					path = System.getProperty("user.dir");
 					pattern = args[0];
 				}
@@ -59,7 +65,7 @@ public class ListFilesWithName {
 			// Get the last modified timestamp
 			long lastModified = folder.lastModified();
 			Timestamp ts = new Timestamp(lastModified);
-			String date = new SimpleDateFormat("dd/MM/yyyy\thh:mm:ss").format(ts);
+			String date = new SimpleDateFormat("dd/MM/yyyy\tHH:mm:ss").format(ts);
 
 			System.out.println(date + "\t" + path);
 			return ; 
