@@ -1,3 +1,5 @@
+package copy.exclude;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -5,17 +7,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class CopyFilesWithName {
-	public static final String dirSeparator = System.getProperty("file.separator");				// window
-	public static final String linuxFileSeparator = "/";										// linux
-	public static final CharSequence asterisk = "*", target1 = ".", replacement1 = "\\.", target2  = "*", replacement2 = ".*";
-
-	public static String spliter = "\\\\";
+	static final String dirSeparator = System.getProperty("file.separator");				// window
+	static final String linuxFileSeparator = "/";										// linux
+	static final CharSequence asterisk = "*", target1 = ".", replacement1 = "\\.", target2  = "*", replacement2 = ".*";
+	static String spliter = "\\\\";
+	static String excludeStr = "--exclude=";
 	static int copyCount = 0;
 	
 	// Directory path here
-	static String srcPath = "", pattern = "", distPath = "";
+	static String srcPath = "", pattern = "", dstPath = "";
+	static ArrayList<String> excludes = new ArrayList<String>();
 			
 	public static void main(String[] args) {
 		
@@ -24,9 +28,8 @@ public class CopyFilesWithName {
 			spliter = linuxFileSeparator; 							// linux
 		}
 		
-		if(args.length != 2){
-			System.out.println("Usage: java " + System.getProperty("sun.java.command") + " srcPath" + " dstPath");
-			srcPath = System.getProperty("user.dir");
+		if(args.length != 3){
+			System.out.println("Usage: java " + System.getProperty("sun.java.command") + " srcPath  dstPath " + excludeStr + "dirs" );
 		} else {
 		
 			// Check if the input has '*'
@@ -54,8 +57,12 @@ public class CopyFilesWithName {
 				// If no '*', just use args[0] as path
 				srcPath = args[0];
 			}
-			distPath = args[1];
-			
+			dstPath = args[1];
+			String[] dirs = args[2].replace(excludeStr, "").split(";");
+			for(String dir: dirs){
+				excludes.add(dir);
+			}
+
 			copyRecursive(srcPath, pattern);
 			
 			System.out.println("No. of copy: "+ copyCount);
@@ -89,7 +96,7 @@ public class CopyFilesWithName {
 				}
 				
 				// Check if the file exists
-				File foundFile = new File(listOfFiles[i].toString().replace(srcPath, distPath));
+				File foundFile = new File(listOfFiles[i].toString().replace(srcPath, dstPath));
 				if(foundFile.exists()){
 					// Check if the file is most update
 					if(foundFile.lastModified() >= listOfFiles[i].lastModified()){
@@ -100,18 +107,28 @@ public class CopyFilesWithName {
 				} 
 				
 				// process copy file operation
-				copyFile(listOfFiles[i].toString(), listOfFiles[i].toString().replace(srcPath, distPath));
+				//copyFile(listOfFiles[i].toString(), listOfFiles[i].toString().replace(srcPath, dstPath));
 
 			} else if(listOfFiles[i].isDirectory()){
 				
 				// Check if the sub directory exists
-				File foundFile = new File(listOfFiles[i].toString().replace(srcPath, distPath));
+				File foundFile = new File(listOfFiles[i].toString().replace(srcPath, dstPath));
+				
 				if(!foundFile.exists()){
-					// If not exist, create the directory
-					mkdir(listOfFiles[i].toString().replace(srcPath, distPath));
+					String[] strs = listOfFiles[i].toString().split(spliter);
+					String subdir = strs[strs.length - 1];
+					
+					if(excludes.contains(subdir)){
+						continue;
+					}
+					
+					System.out.println(listOfFiles[i].toString().replace(srcPath, dstPath));
+					// If not exist and exclude, create the directory
+					mkdir(listOfFiles[i].toString().replace(srcPath, dstPath));
+					copyRecursive(listOfFiles[i].toString(), pattern);
 				}
 				
-				copyRecursive(listOfFiles[i].toString(), pattern);
+		
 			}
 		}		
 	}

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build" name="CopyFiles">
-	<property name="main-class"  value="CopyFilesWithName"/>
+	<property name="main-class"  value="copy.exclude.CopyFilesWithName"/>
 	<target name="build">
 		<mkdir dir="deploy" />
-		<jar jarfile="deploy/CopyFilesWithName.jar" basedir="bin">
+		<jar jarfile="deploy/copyWithExclude.jar" basedir="bin">
 			<manifest>
 				<attribute name="Main-Class" value="${main-class}" />
 			</manifest>
