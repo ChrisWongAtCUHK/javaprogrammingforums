@@ -72,7 +72,6 @@ public class CopyFilesWithName {
 
 	// List the files recurrsivly
 	public static void copyRecursive(String path, String pattern){
-		
 		File folder = new File(path);
 		// Check if the path exists
 		if(!folder.exists()){
@@ -80,11 +79,12 @@ public class CopyFilesWithName {
 			return;
 		} else if(folder.isFile()){
 			// Special case for input path is file name
+			System.out.println(path + " is a file");
 			return ; 
 		}
 		
 		File[] listOfFiles = folder.listFiles();
-
+		
 		for (int i = 0; i < listOfFiles.length; i++) {
 			// Check if file or directory
 			if (listOfFiles[i].isFile()) {
@@ -97,6 +97,7 @@ public class CopyFilesWithName {
 				
 				// Check if the file exists
 				File foundFile = new File(listOfFiles[i].toString().replace(srcPath, dstPath));
+				
 				if(foundFile.exists()){
 					// Check if the file is most update
 					if(foundFile.lastModified() >= listOfFiles[i].lastModified()){
@@ -107,28 +108,31 @@ public class CopyFilesWithName {
 				} 
 				
 				// process copy file operation
-				//copyFile(listOfFiles[i].toString(), listOfFiles[i].toString().replace(srcPath, dstPath));
+				copyFile(listOfFiles[i].toString(), listOfFiles[i].toString().replace(srcPath, dstPath));
 
-			} else if(listOfFiles[i].isDirectory()){
+			} else if(listOfFiles[i].isDirectory()){				
+				// Check if exclude, if yes do nothing
+				String[] strs = listOfFiles[i].toString().split(spliter);
+				String subdir = strs[strs.length - 1];
+				if(excludes.contains(subdir)){
+					continue;
+				}
 				
 				// Check if the sub directory exists
 				File foundFile = new File(listOfFiles[i].toString().replace(srcPath, dstPath));
-				
 				if(!foundFile.exists()){
-					String[] strs = listOfFiles[i].toString().split(spliter);
-					String subdir = strs[strs.length - 1];
 					
-					if(excludes.contains(subdir)){
-						continue;
-					}
 					
-					System.out.println(listOfFiles[i].toString().replace(srcPath, dstPath));
-					// If not exist and exclude, create the directory
+					
+					// If not exist , create the directory
 					mkdir(listOfFiles[i].toString().replace(srcPath, dstPath));
-					copyRecursive(listOfFiles[i].toString(), pattern);
+					
 				}
 				
+				copyRecursive(listOfFiles[i].toString(), pattern);
 		
+			} else {
+				System.out.println(listOfFiles[i] + " is not file or directory");
 			}
 		}		
 	}
