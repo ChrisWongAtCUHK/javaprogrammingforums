@@ -4,6 +4,7 @@ reference:
 
 
 ```
+cd ListFiles
 javac -d bin  src/*.java
 ```
 ```
